@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta property="og:title" content="AI Appointment Setter - Interactive Demo">
+<meta property="og:description" content="Watch an AI book a salon appointment in under a minute: pick a service, pick a time, booked. Scripted simulation by Bilal Ali, AI Automation Expert.">
+<meta property="og:url" content="https://ai-appointment-setter-mr-bilal-alis-projects.vercel.app">
+<meta property="og:image" content="https://ai-appointment-setter-mr-bilal-alis-projects.vercel.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Appointment Setter - Interactive Demo">
+<meta name="twitter:description" content="Watch an AI book a salon appointment in under a minute: pick a service, pick a time, booked. Scripted simulation by Bilal Ali, AI Automation Expert.">
+<meta name="twitter:image" content="https://ai-appointment-setter-mr-bilal-alis-projects.vercel.app/og-image.png">
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>AI Appointment Setter — Glow Studio Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef4ef;
+    --bg-soft:#e3eee4;
+    --card:#ffffff;
+    --ink:#14231b;
+    --ink-2:#40534a;
+    --ink-3:#68796f;
+    --green:#0d6b4d;
+    --green-dark:#084c36;
+    --green-tint:#e2f0e7;
+    --green-tint-2:#cfe8d8;
+    --line:#d3e0d5;
+    --line-strong:#b9cfbd;
+    --taken-bg:#eef0ee;
+    --taken-ink:#9aa69d;
+    --warn-bg:#fdf3e0;
+    --warn-ink:#7a5510;
+    --warn-line:#ecd9a8;
+    --shadow:0 1px 2px rgba(13,80,55,.06),0 10px 30px -14px rgba(13,80,55,.22);
+    --radius:18px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1a14;
+      --bg-soft:#16241b;
+      --card:#1a2a20;
+      --ink:#eef5ef;
+      --ink-2:#c2d4c7;
+      --ink-3:#93a89a;
+      --green:#3ec48f;
+      --green-dark:#7adbb2;
+      --green-tint:#1e3a2b;
+      --green-tint-2:#274b37;
+      --line:#2b4234;
+      --line-strong:#3a5947;
+      --taken-bg:#222d26;
+      --taken-ink:#71816f;
+      --warn-bg:#2e2410;
+      --warn-ink:#eec987;
+      --warn-line:#57451c;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -14px rgba(0,0,0,.55);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.001s !important;transition-duration:.001s !important}
+  }
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:16px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 56px}
+
+  /* ---------- Header ---------- */
+  header.top{text-align:center;padding:14px 4px 6px}
+  .biz{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--green);
+  }
+  .biz::before,.biz::after{content:"";width:22px;height:1px;background:var(--line-strong)}
+  h1{
+    font-family:"DM Serif Display",Georgia,serif;font-weight:400;
+    font-size:clamp(38px,7.5vw,54px);line-height:1.06;margin:12px 0 10px;letter-spacing:.01em;
+  }
+  .subtitle{font-size:clamp(17px,3.4vw,20px);color:var(--ink-2);margin:0 auto;max-width:520px}
+  .honesty{
+    margin:20px auto 0;max-width:560px;
+    background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-line);
+    border-radius:12px;padding:10px 16px;font-size:14px;font-weight:600;line-height:1.45;
+  }
+
+  /* ---------- Start / timer ---------- */
+  .startbar{
+    margin:26px auto 0;display:flex;flex-direction:column;align-items:center;gap:12px;
+  }
+  .btn{
+    appearance:none;border:0;cursor:pointer;font:inherit;font-weight:700;
+    border-radius:999px;padding:14px 30px;font-size:16px;
+    background:var(--green);color:#fff;
+    box-shadow:0 8px 20px -8px rgba(13,107,77,.55);
+    transition:transform .15s ease,background .15s ease,box-shadow .15s ease;
+  }
+  @media (prefers-color-scheme: dark){ .btn{color:#08130d} }
+  .btn:hover{background:var(--green-dark)}
+  .btn:active{transform:scale(.98)}
+  .btn:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+  .btn[disabled]{background:var(--line-strong);color:var(--ink-3);cursor:not-allowed;box-shadow:none}
+  .btn.secondary{
+    background:transparent;color:var(--green);border:1.5px solid var(--green);box-shadow:none;
+  }
+  .btn.secondary:hover{background:var(--green-tint)}
+  .btn.ghost{
+    background:transparent;color:var(--ink-2);border:1.5px solid var(--line-strong);box-shadow:none;
+  }
+  .btn.ghost:hover{border-color:var(--ink-3);color:var(--ink)}
+  .btn.small{padding:10px 20px;font-size:14.5px}
+  .timerchip{
+    display:none;align-items:center;gap:8px;
+    background:var(--card);border:1px solid var(--line);border-radius:999px;
+    padding:7px 16px;font-size:14px;font-weight:600;color:var(--ink-2);
+    box-shadow:var(--shadow);font-variant-numeric:tabular-nums;
+  }
+  .timerchip.on{display:inline-flex}
+  .timerchip .dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .timerchip b{color:var(--ink)}
+
+  /* ---------- Progress ---------- */
+  .progress{
+    display:none;margin:30px auto 4px;max-width:520px;
+    align-items:flex-start;justify-content:space-between;position:relative;
+  }
+  .progress.on{display:flex}
+  .progress::before{
+    content:"";position:absolute;top:15px;left:12%;right:12%;height:2px;background:var(--line-strong);z-index:0;
+  }
+  .pstep{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:7px;width:33%;text-align:center}
+  .pdot{
+    width:31px;height:31px;border-radius:50%;display:grid;place-items:center;
+    background:var(--card);border:2px solid var(--line-strong);color:var(--ink-3);
+    font-size:13.5px;font-weight:700;transition:all .25s ease;
+  }
+  .pstep.active .pdot{border-color:var(--green);background:var(--green);color:#fff}
+  @media (prefers-color-scheme: dark){ .pstep.active .pdot{color:#08130d} }
+  .pstep.done .pdot{border-color:var(--green);background:var(--green-tint);color:var(--green)}
+  .plabel{font-size:12.5px;font-weight:600;color:var(--ink-3)}
+  .pstep.active .plabel{color:var(--ink)}
+  .pstep.done .plabel{color:var(--green)}
+
+  /* ---------- Step cards ---------- */
+  .step{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:26px 24px;margin-top:22px;
+  }
+  .step.locked{opacity:.45;pointer-events:none;filter:saturate(.6)}
+  .step.hidden{display:none}
+  .stephead{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+  .stepnum{
+    font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);
+    background:var(--green-tint);border-radius:999px;padding:4px 11px;white-space:nowrap;
+  }
+  h2{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:26px;margin:0;line-height:1.2}
+  .step p.lede{color:var(--ink-2);margin:6px 0 18px;font-size:15.5px}
+  .stepfoot{margin-top:22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .stepfoot .hint{font-size:13.5px;color:var(--ink-3)}
+  .backlink{
+    background:none;border:0;cursor:pointer;font:inherit;font-size:14.5px;font-weight:600;
+    color:var(--ink-3);text-decoration:underline;text-underline-offset:3px;padding:6px 2px;
+  }
+  .backlink:hover{color:var(--green)}
+
+  /* Services */
+  .services{display:grid;grid-template-columns:1fr;gap:12px}
+  @media (min-width:620px){ .services{grid-template-columns:repeat(3,1fr)} }
+  .svc{
+    text-align:left;cursor:pointer;font:inherit;color:var(--ink);
+    background:var(--card);border:2px solid var(--line);border-radius:14px;
+    padding:18px 16px;display:flex;flex-direction:column;gap:5px;
+    transition:border-color .15s ease,background .15s ease,transform .15s ease;
+  }
+  .svc:hover{border-color:var(--line-strong);transform:translateY(-1px)}
+  .svc:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+  .svc .svc-name{font-weight:700;font-size:16.5px;line-height:1.3}
+  .svc .svc-desc{font-size:13.5px;color:var(--ink-2);line-height:1.45}
+  .svc .svc-meta{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+  .dur{
+    font-size:12.5px;font-weight:700;color:var(--green);background:var(--green-tint);
+    border-radius:999px;padding:3px 10px;
+  }
+  .svc .check{
+    margin-left:auto;font-size:12.5px;font-weight:700;color:var(--green);display:none;align-items:center;gap:4px;
+  }
+  .svc.selected{border-color:var(--green);background:var(--green-tint)}
+  .svc.selected .check{display:inline-flex}
+
+  /* Days + times */
+  .days{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+  .day{
+    cursor:pointer;font:inherit;color:var(--ink);background:var(--card);
+    border:2px solid var(--line);border-radius:12px;padding:9px 6px;flex:1 1 17%;min-width:58px;
+    display:flex;flex-direction:column;align-items:center;gap:1px;
+    transition:border-color .15s ease,background .15s ease;
+  }
+  .day:hover{border-color:var(--line-strong)}
+  .day:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+  .day .dow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .day .dnum{font-size:17px;font-weight:700;line-height:1.15}
+  .day .dmon{font-size:11.5px;color:var(--ink-3)}
+  .day.selected{border-color:var(--green);background:var(--green-tint)}
+  .day.selected .dow,.day.selected .dmon{color:var(--green)}
+  .timeslabel{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+  .times{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media (min-width:620px){ .times{grid-template-columns:repeat(6,1fr)} }
+  .slot{
+    cursor:pointer;font:inherit;font-weight:600;font-size:15px;color:var(--ink);
+    background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px 4px;
+    font-variant-numeric:tabular-nums;text-align:center;
+    transition:border-color .15s ease,background .15s ease;
+  }
+  .slot:hover{border-color:var(--line-strong)}
+  .slot:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+  .slot.selected{border-color:var(--green);background:var(--green);color:#fff}
+  @media (prefers-color-scheme: dark){ .slot.selected{color:#08130d} }
+  .slot.taken{
+    background:var(--taken-bg);border-color:var(--line);color:var(--taken-ink);
+    cursor:not-allowed;text-decoration:line-through;
+    display:flex;flex-direction:column;align-items:center;gap:0;line-height:1.25;
+  }
+  .slot.taken .taken-tag{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+  .aistatus{
+    margin-top:18px;min-height:30px;display:flex;align-items:center;gap:10px;
+    font-size:15px;font-weight:600;
+  }
+  .aistatus .spinner{
+    width:18px;height:18px;flex:none;border-radius:50%;
+    border:2.5px solid var(--green-tint-2);border-top-color:var(--green);
+    animation:spin .7s linear infinite;display:none;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .aistatus.checking{color:var(--ink-2)}
+  .aistatus.checking .spinner{display:block}
+  .aistatus.ok{color:var(--green)}
+  .aistatus .okbadge{
+    display:none;width:22px;height:22px;flex:none;border-radius:50%;
+    background:var(--green);color:#fff;place-items:center;
+  }
+  @media (prefers-color-scheme: dark){ .aistatus .okbadge{color:#08130d} }
+  .aistatus.ok .okbadge{display:grid}
+  .aistatus .okbadge svg{width:13px;height:13px}
+
+  /* Details form */
+  .fields{display:grid;grid-template-columns:1fr;gap:14px}
+  @media (min-width:620px){ .fields{grid-template-columns:1fr 1fr} }
+  label.flabel{display:block;font-size:13.5px;font-weight:700;margin-bottom:6px}
+  input[type="text"],input[type="tel"]{
+    width:100%;font:inherit;font-size:16px;color:var(--ink);
+    background:var(--card);border:2px solid var(--line);border-radius:12px;
+    padding:12px 14px;
+  }
+  input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-tint)}
+  .demo-row{margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .demo-note{font-size:13.5px;color:var(--ink-3)}
+  .formerr{display:none;margin-top:14px;color:#b3352b;font-size:14.5px;font-weight:600}
+  @media (prefers-color-scheme: dark){ .formerr{color:#ff9d94} }
+  .formerr.show{display:block}
+
+  /* ---------- Outcome ---------- */
+  .outcome{display:none}
+  .outcome.on{display:block}
+  .booked-banner{
+    text-align:center;padding:8px 0 4px;
+  }
+  .booked-banner .big{
+    font-family:"DM Serif Display",Georgia,serif;font-size:32px;line-height:1.15;margin:0 0 4px;
+  }
+  .booked-time{
+    display:inline-flex;align-items:center;gap:8px;margin-top:8px;
+    background:var(--green-tint);color:var(--green);
+    font-weight:700;font-size:16px;border-radius:999px;padding:8px 20px;
+    font-variant-numeric:tabular-nums;
+  }
+  .confirm-card{
+    margin-top:20px;border:2px solid var(--green);border-radius:14px;overflow:hidden;
+  }
+  .confirm-head{
+    background:var(--green);color:#fff;padding:13px 18px;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  @media (prefers-color-scheme: dark){ .confirm-head{color:#08130d} }
+  .confirm-head .biz-name{font-weight:700;font-size:16px}
+  .confirm-head .conf-tag{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+  .confirm-body{padding:8px 18px 14px}
+  .crow{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .crow:last-child{border-bottom:0}
+  .crow .k{color:var(--ink-3);font-size:14px;font-weight:600}
+  .crow .v{font-weight:700;text-align:right;font-size:15px}
+  .sms-wrap{margin-top:22px}
+  .sms-label{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+  .phone{
+    max-width:340px;margin:0 auto;background:var(--bg-soft);border:1px solid var(--line);
+    border-radius:20px;padding:16px 14px 12px;
+  }
+  .phone .from{font-size:12px;font-weight:700;color:var(--ink-3);text-align:center;margin-bottom:10px;letter-spacing:.04em}
+  .bubble{
+    background:var(--card);border:1px solid var(--line);border-radius:16px 16px 16px 4px;
+    padding:12px 14px;font-size:14.5px;line-height:1.5;color:var(--ink);
+    box-shadow:0 1px 2px rgba(0,0,0,.05);
+  }
+  .bubble .sig{color:var(--ink-3)}
+  .reminder-note{
+    margin-top:18px;text-align:center;font-size:14.5px;color:var(--ink-2);
+    background:var(--green-tint);border-radius:12px;padding:11px 16px;font-weight:600;
+  }
+  .outcome-actions{margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  /* ---------- CTA ---------- */
+  .cta-block{display:none;margin-top:26px;text-align:center}
+  .cta-block.on{display:block}
+  .cta-btn{
+    display:inline-block;text-decoration:none;font-weight:700;font-size:17.5px;
+    background:var(--green);color:#fff;border-radius:999px;padding:17px 34px;
+    box-shadow:0 10px 24px -8px rgba(13,107,77,.55);
+    transition:background .15s ease,transform .15s ease;
+  }
+  @media (prefers-color-scheme: dark){ .cta-btn{color:#08130d} }
+  .cta-btn:hover{background:var(--green-dark);transform:translateY(-1px)}
+  .cta-btn:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+  .built-by{margin-top:12px;font-size:14px;color:var(--ink-2);font-weight:600}
+
+  /* ---------- How it works ---------- */
+  .how{margin-top:44px}
+  .how h2{text-align:center;font-size:24px;margin-bottom:18px}
+  .how-grid{display:grid;grid-template-columns:1fr;gap:12px}
+  @media (min-width:620px){ .how-grid{grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch} }
+  .how-card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px;box-shadow:var(--shadow);
+  }
+  .how-card .n{
+    width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;
+    display:grid;place-items:center;font-size:13.5px;font-weight:700;margin-bottom:10px;
+  }
+  @media (prefers-color-scheme: dark){ .how-card .n{color:#08130d} }
+  .how-card h3{margin:0 0 5px;font-size:16px}
+  .how-card p{margin:0;font-size:14px;color:var(--ink-2)}
+  .how-arrow{display:none}
+  @media (min-width:620px){
+    .how-arrow{display:grid;place-items:center;color:var(--green);font-size:20px;font-weight:700}
+  }
+  footer{margin-top:36px;text-align:center}
+  footer .honesty{margin-top:0}
+  footer .foot-note{margin-top:14px;font-size:13px;color:var(--ink-3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="biz">Glow Studio &middot; Demo</div>
+    <h1>AI Appointment Setter</h1>
+    <p class="subtitle">Watch an AI book a real appointment &mdash; in under a minute.</p>
+    <div class="honesty" role="note">Scripted simulation &mdash; no real booking, call, or message is made. Demo data only.</div>
+    <div class="startbar">
+      <button class="btn" id="startBtn" type="button">Start the demo</button>
+      <span class="timerchip" id="timerChip" aria-live="off"><span class="dot" aria-hidden="true"></span>Elapsed&nbsp;<b id="timerVal">0s</b></span>
+    </div>
+  </header>
+
+  <nav class="progress" id="progress" aria-label="Booking progress">
+    <div class="pstep" id="pstep1"><span class="pdot">1</span><span class="plabel">Pick a service</span></div>
+    <div class="pstep" id="pstep2"><span class="pdot">2</span><span class="plabel">Day &amp; time</span></div>
+    <div class="pstep" id="pstep3"><span class="pdot">3</span><span class="plabel">Your details</span></div>
+  </nav>
+
+  <!-- STEP 1 -->
+  <section class="step locked" id="step1" aria-labelledby="step1Title">
+    <div class="stephead"><span class="stepnum">Step 1</span><h2 id="step1Title">Pick a service</h2></div>
+    <p class="lede">Glow Studio is a fictional beauty salon used for this demo. Choose a treatment to begin.</p>
+    <div class="services" role="group" aria-label="Services">
+      <button class="svc" type="button" data-service="Signature Facial" data-duration="60 min">
+        <span class="svc-name">Signature Facial</span>
+        <span class="svc-desc">Deep cleanse, exfoliation, and a relaxing facial massage.</span>
+        <span class="svc-meta"><span class="dur">60 min</span><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Selected</span></span>
+      </button>
+      <button class="svc" type="button" data-service="Deep-Tissue Massage" data-duration="60 min">
+        <span class="svc-name">Deep-Tissue Massage</span>
+        <span class="svc-desc">Firm, focused pressure to work out deep muscle tension.</span>
+        <span class="svc-meta"><span class="dur">60 min</span><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Selected</span></span>
+      </button>
+      <button class="svc" type="button" data-service="Mani-Pedi Deluxe" data-duration="75 min">
+        <span class="svc-name">Mani-Pedi Deluxe</span>
+        <span class="svc-desc">Full manicure and pedicure with soak, shaping, and polish.</span>
+        <span class="svc-meta"><span class="dur">75 min</span><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Selected</span></span>
+      </button>
+    </div>
+    <div class="stepfoot">
+      <button class="btn" id="toStep2" type="button" disabled>Continue</button>
+      <span class="hint" id="step1Hint">Select a service to continue.</span>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step hidden" id="step2" aria-labelledby="step2Title">
+    <div class="stephead"><span class="stepnum">Step 2</span><h2 id="step2Title">Pick a day and time</h2></div>
+    <p class="lede">The AI checks the salon calendar as you choose. One slot each day is already taken &mdash; notice how it is handled.</p>
+    <div class="days" id="days" role="group" aria-label="Choose a day"></div>
+    <p class="timeslabel" id="timesLabel">Available times</p>
+    <div class="times" id="times" role="group" aria-label="Choose a time"></div>
+    <div class="aistatus" id="aiStatus" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <span class="okbadge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <span id="aiStatusText">Pick a time slot and the AI will check it.</span>
+    </div>
+    <div class="stepfoot">
+      <button class="btn" id="toStep3" type="button" disabled>Continue</button>
+      <button class="backlink" id="backTo1" type="button">Back to services</button>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step hidden" id="step3" aria-labelledby="step3Title">
+    <div class="stephead"><span class="stepnum">Step 3</span><h2 id="step3Title">Your details</h2></div>
+    <p class="lede">Just a name and phone number &mdash; that is all the AI needs to finish the booking.</p>
+    <div class="fields">
+      <div>
+        <label class="flabel" for="nameInput">Full name</label>
+        <input type="text" id="nameInput" autocomplete="name" placeholder="e.g. Jordan Lee" />
+      </div>
+      <div>
+        <label class="flabel" for="phoneInput">Phone number</label>
+        <input type="tel" id="phoneInput" autocomplete="tel" placeholder="e.g. (555) 010-2468" />
+      </div>
+    </div>
+    <div class="demo-row">
+      <button class="btn secondary small" id="demoFill" type="button">Use demo details</button>
+      <span class="demo-note">Fills a clearly fake demo name and a 555 number.</span>
+    </div>
+    <p class="formerr" id="formErr" role="alert">Please add both a name and a phone number to finish.</p>
+    <div class="stepfoot">
+      <button class="btn" id="confirmBtn" type="button">Confirm booking</button>
+      <button class="backlink" id="backTo2" type="button">Back to day &amp; time</button>
+    </div>
+  </section>
+
+  <!-- OUTCOME -->
+  <section class="step outcome" id="outcome" aria-labelledby="outcomeTitle">
+    <div class="booked-banner">
+      <p class="big" id="outcomeTitle">Appointment booked</p>
+      <p style="margin:0;color:var(--ink-2)">The AI setter handled the whole booking, start to finish.</p>
+      <div><span class="booked-time" id="bookedTime">Booked in 0 seconds</span></div>
+    </div>
+
+    <div class="confirm-card">
+      <div class="confirm-head"><span class="biz-name">Glow Studio</span><span class="conf-tag">Confirmation &middot; Demo</span></div>
+      <div class="confirm-body">
+        <div class="crow"><span class="k">Service</span><span class="v" id="cService">&mdash;</span></div>
+        <div class="crow"><span class="k">Day</span><span class="v" id="cDay">&mdash;</span></div>
+        <div class="crow"><span class="k">Time</span><span class="v" id="cTime">&mdash;</span></div>
+        <div class="crow"><span class="k">Duration</span><span class="v" id="cDuration">&mdash;</span></div>
+        <div class="crow"><span class="k">Booked for</span><span class="v" id="cName">&mdash;</span></div>
+      </div>
+    </div>
+
+    <div class="sms-wrap">
+      <p class="sms-label">Simulated text preview &mdash; nothing was sent</p>
+      <div class="phone">
+        <div class="from">TEXT MESSAGE &middot; GLOW STUDIO (DEMO)</div>
+        <div class="bubble" id="smsBubble"></div>
+      </div>
+    </div>
+
+    <p class="reminder-note">Reminder text scheduled for the morning of the appointment (simulated)</p>
+
+    <div class="outcome-actions">
+      <button class="btn secondary" id="rescheduleBtn" type="button">Reschedule</button>
+      <button class="btn ghost" id="startOverBtn" type="button">Start over</button>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-block" id="ctaBlock">
+    <a class="cta-btn" href="https://cal.com/mrbilalali/discovery-call" target="_blank" rel="noopener">Book a discovery call &mdash; see this on your business</a>
+    <p class="built-by">Built by Bilal Ali &mdash; AI Automation Expert</p>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" aria-labelledby="howTitle">
+    <h2 id="howTitle">How it works</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="n">1</div>
+        <h3>Customer picks a service</h3>
+        <p>The customer chooses what they want and when &mdash; no phone tag, no waiting on hold.</p>
+      </div>
+      <div class="how-arrow" aria-hidden="true">&rarr;</div>
+      <div class="how-card">
+        <div class="n">2</div>
+        <h3>AI checks the live calendar</h3>
+        <p>The AI setter checks real availability, avoids taken slots, and holds an open one.</p>
+      </div>
+      <div class="how-arrow" aria-hidden="true">&rarr;</div>
+      <div class="how-card">
+        <div class="n">3</div>
+        <h3>Appointment confirmed + reminder set</h3>
+        <p>The booking is confirmed right away and a reminder is set for the day of the visit.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="honesty" role="note">Scripted simulation &mdash; no real booking, call, or message is made. Demo data only.</div>
+    <p class="foot-note">Glow Studio is a fictional business created for this demonstration.</p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var DAYS = [
+    { dow:"Fri", num:"30", mon:"Oct", full:"Friday, October 30" },
+    { dow:"Sat", num:"31", mon:"Oct", full:"Saturday, October 31" },
+    { dow:"Sun", num:"1",  mon:"Nov", full:"Sunday, November 1" },
+    { dow:"Mon", num:"2",  mon:"Nov", full:"Monday, November 2" },
+    { dow:"Tue", num:"3",  mon:"Nov", full:"Tuesday, November 3" }
+  ];
+  var SLOTS = ["9:00 AM","10:30 AM","12:00 PM","1:30 PM","3:00 PM","4:30 PM"];
+  var TAKEN = [2, 0, 4, 1, 3]; /* one taken slot index per day */
+
+  var state = {
+    started:false,
+    service:null, duration:null,
+    dayIdx:0, time:null, slotChecked:false,
+    name:"", phone:"",
+    startStamp:0, timerId:null, checkTimeout:null
+  };
+
+  var $ = function(id){ return document.getElementById(id); };
+  var startBtn=$("startBtn"), timerChip=$("timerChip"), timerVal=$("timerVal"),
+      progress=$("progress"),
+      step1=$("step1"), step2=$("step2"), step3=$("step3"), outcome=$("outcome"),
+      toStep2=$("toStep2"), toStep3=$("toStep3"),
+      aiStatus=$("aiStatus"), aiStatusText=$("aiStatusText");
+
+  function fmtElapsed(ms){
+    var s = Math.floor(ms/1000);
+    if (s < 60) return s + "s";
+    return Math.floor(s/60) + "m " + (s % 60) + "s";
+  }
+  function startTimer(){
+    stopTimer();
+    state.timerId = setInterval(function(){
+      timerVal.textContent = fmtElapsed(Date.now() - state.startStamp);
+    }, 250);
+    timerVal.textContent = "0s";
+  }
+  function stopTimer(){ if (state.timerId){ clearInterval(state.timerId); state.timerId = null; } }
+
+  function setProgress(n){
+    [1,2,3].forEach(function(i){
+      var el = $("pstep"+i);
+      el.classList.remove("active","done");
+      if (i < n) el.classList.add("done");
+      if (i === n) el.classList.add("active");
+      el.querySelector(".pdot").innerHTML = (i < n)
+        ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'
+        : String(i);
+    });
+  }
+  function showStep(n){
+    step1.classList.toggle("hidden", n !== 1);
+    step2.classList.toggle("hidden", n !== 2);
+    step3.classList.toggle("hidden", n !== 3);
+    outcome.classList.remove("on");
+    $("ctaBlock").classList.remove("on");
+    if (n >= 1 && n <= 3) setProgress(n);
+    var target = [null, step1, step2, step3][n];
+    if (target) target.scrollIntoView({ behavior:"smooth", block:"start" });
+  }
+
+  /* ---------- Start ---------- */
+  startBtn.addEventListener("click", function(){
+    if (!state.started){
+      state.started = true;
+      state.startStamp = Date.now();
+      startTimer();
+      timerChip.classList.add("on");
+      progress.classList.add("on");
+      step1.classList.remove("locked");
+      startBtn.textContent = "Demo running — timer on";
+      startBtn.disabled = true;
+    }
+    showStep(1);
+  });
+
+  /* ---------- Step 1: services ---------- */
+  var svcBtns = Array.prototype.slice.call(document.querySelectorAll(".svc"));
+  svcBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      svcBtns.forEach(function(b){ b.classList.remove("selected"); b.setAttribute("aria-pressed","false"); });
+      btn.classList.add("selected");
+      btn.setAttribute("aria-pressed","true");
+      state.service = btn.getAttribute("data-service");
+      state.duration = btn.getAttribute("data-duration");
+      toStep2.disabled = false;
+      $("step1Hint").textContent = state.service + " selected — tap Continue.";
+    });
+  });
+  toStep2.addEventListener("click", function(){
+    if (!state.service) return;
+    renderDays();
+    renderTimes();
+    showStep(2);
+  });
+
+  /* ---------- Step 2: days & times ---------- */
+  function renderDays(){
+    var box = $("days"); box.innerHTML = "";
+    DAYS.forEach(function(d, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "day" + (i === state.dayIdx ? " selected" : "");
+      b.setAttribute("aria-pressed", i === state.dayIdx ? "true" : "false");
+      b.setAttribute("aria-label", d.full);
+      b.innerHTML = '<span class="dow">'+d.dow+'</span><span class="dnum">'+d.num+'</span><span class="dmon">'+d.mon+'</span>';
+      b.addEventListener("click", function(){
+        if (state.dayIdx === i) return;
+        state.dayIdx = i;
+        state.time = null; state.slotChecked = false;
+        renderDays(); renderTimes(); resetAiStatus();
+      });
+      box.appendChild(b);
+    });
+  }
+  function renderTimes(){
+    var d = DAYS[state.dayIdx];
+    $("timesLabel").textContent = "Times for " + d.dow + ", " + d.mon + " " + d.num;
+    var box = $("times"); box.innerHTML = "";
+    SLOTS.forEach(function(t, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      if (i === TAKEN[state.dayIdx]){
+        b.className = "slot taken";
+        b.disabled = true;
+        b.setAttribute("aria-label", t + " — taken");
+        b.innerHTML = t + '<span class="taken-tag">Taken</span>';
+      } else {
+        b.className = "slot" + (state.time === t ? " selected" : "");
+        b.textContent = t;
+        b.setAttribute("aria-pressed", state.time === t ? "true" : "false");
+        b.addEventListener("click", function(){ selectSlot(t); });
+      }
+      box.appendChild(b);
+    });
+  }
+  function resetAiStatus(){
+    if (state.checkTimeout){ clearTimeout(state.checkTimeout); state.checkTimeout = null; }
+    aiStatus.className = "aistatus";
+    aiStatusText.textContent = "Pick a time slot and the AI will check it.";
+    toStep3.disabled = true;
+  }
+  function selectSlot(t){
+    state.time = t;
+    state.slotChecked = false;
+    toStep3.disabled = true;
+    renderTimes();
+    aiStatus.className = "aistatus checking";
+    aiStatusText.textContent = "AI is checking availability…";
+    if (state.checkTimeout) clearTimeout(state.checkTimeout);
+    state.checkTimeout = setTimeout(function(){
+      state.slotChecked = true;
+      aiStatus.className = "aistatus ok";
+      aiStatusText.textContent = "That slot is open — held for you.";
+      toStep3.disabled = false;
+    }, 1100);
+  }
+  $("backTo1").addEventListener("click", function(){ showStep(1); });
+  toStep3.addEventListener("click", function(){
+    if (!state.time || !state.slotChecked) return;
+    showStep(3);
+  });
+
+  /* ---------- Step 3: details ---------- */
+  $("demoFill").addEventListener("click", function(){
+    $("nameInput").value = "Demo Guest";
+    $("phoneInput").value = "(555) 010-2468";
+    $("formErr").classList.remove("show");
+  });
+  ["nameInput","phoneInput"].forEach(function(id){
+    $(id).addEventListener("input", function(){ $("formErr").classList.remove("show"); });
+  });
+  $("backTo2").addEventListener("click", function(){ showStep(2); });
+  $("confirmBtn").addEventListener("click", function(){
+    var name = $("nameInput").value.trim();
+    var phone = $("phoneInput").value.trim();
+    if (!name || !phone){
+      $("formErr").classList.add("show");
+      if (!name) $("nameInput").focus(); else $("phoneInput").focus();
+      return;
+    }
+    state.name = name; state.phone = phone;
+    finishBooking();
+  });
+
+  /* ---------- Outcome ---------- */
+  function finishBooking(){
+    var secs = Math.max(1, Math.round((Date.now() - state.startStamp) / 1000));
+    stopTimer();
+    timerChip.classList.remove("on");
+
+    var d = DAYS[state.dayIdx];
+    $("cService").textContent = state.service;
+    $("cDay").textContent = d.full;
+    $("cTime").textContent = state.time;
+    $("cDuration").textContent = state.duration;
+    $("cName").textContent = state.name;
+    $("bookedTime").textContent = "Booked in " + secs + (secs === 1 ? " second" : " seconds");
+
+    var first = state.name.split(" ")[0];
+    $("smsBubble").innerHTML =
+      "Hi " + escapeHtml(first) + ", your " + escapeHtml(state.service) +
+      " at Glow Studio is confirmed for " + d.dow + ", " + d.mon + " " + d.num +
+      " at " + state.time + " (" + state.duration + "). Reply C to confirm or R to reschedule. " +
+      '<span class="sig">&mdash; Glow Studio (demo)</span>';
+
+    step1.classList.add("hidden"); step2.classList.add("hidden"); step3.classList.add("hidden");
+    outcome.classList.add("on");
+    $("ctaBlock").classList.add("on");
+    [1,2,3].forEach(function(i){
+      var el = $("pstep"+i);
+      el.classList.remove("active"); el.classList.add("done");
+      el.querySelector(".pdot").innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+    });
+    outcome.scrollIntoView({ behavior:"smooth", block:"start" });
+  }
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+
+  $("rescheduleBtn").addEventListener("click", function(){
+    state.time = null; state.slotChecked = false;
+    startTimer();
+    timerChip.classList.add("on");
+    renderDays(); renderTimes(); resetAiStatus();
+    showStep(2);
+  });
+  $("startOverBtn").addEventListener("click", function(){
+    stopTimer();
+    if (state.checkTimeout) clearTimeout(state.checkTimeout);
+    state = {
+      started:false, service:null, duration:null,
+      dayIdx:0, time:null, slotChecked:false,
+      name:"", phone:"", startStamp:0, timerId:null, checkTimeout:null
+    };
+    svcBtns.forEach(function(b){ b.classList.remove("selected"); });
+    toStep2.disabled = true;
+    $("step1Hint").textContent = "Select a service to continue.";
+    $("nameInput").value = ""; $("phoneInput").value = "";
+    $("formErr").classList.remove("show");
+    timerChip.classList.remove("on");
+    progress.classList.remove("on");
+    outcome.classList.remove("on");
+    $("ctaBlock").classList.remove("on");
+    step2.classList.add("hidden"); step3.classList.add("hidden");
+    step1.classList.remove("hidden"); step1.classList.add("locked");
+    resetAiStatus();
+    startBtn.disabled = false;
+    startBtn.textContent = "Start the demo";
+    window.scrollTo({ top:0, behavior:"smooth" });
+  });
+})();
+</script>
+</body>
+</html>
